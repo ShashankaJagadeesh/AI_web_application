@@ -1,24 +1,43 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/database");
 
-// defining the user model with id, username and password
 const User = sequelize.define("User", {
     id: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
-        primaryKey: true
+        primaryKey: true,
     },
-    username: {
+    first_name: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique: true
+    },
+    last_name: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+    email: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true,
+        validate: {
+            isEmail: true,
+        },
     },
     password: {
         type: DataTypes.STRING,
-        allowNull: false
-    }
+        allowNull: false,
+    },
+    created_at: {
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW,
+    },
+    updated_at: {
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW,
+    },
 }, {
-    timestamps: true  //Keeping timestamps to mark when users are created/updated
+    timestamps: true, // Ensures createdAt & updatedAt fields are auto-managed
+    underscored: true,
 });
 
 module.exports = User;
