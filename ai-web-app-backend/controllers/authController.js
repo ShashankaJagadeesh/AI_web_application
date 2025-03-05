@@ -1,6 +1,6 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const User = require("../models/User"); //  Import User model directly
+const User = require("../models/User"); 
 
 
 const registerUser = async (req, res) => {
@@ -34,21 +34,35 @@ const registerUser = async (req, res) => {
 
 const loginUser = async (req, res) => {
     try {
-        const { email, password } = req.body; // Use email for username
+        const { email, password } = req.body;
 
-        // Check if user exists by email
+        // Debugging Log
+        console.log("Login Attempt - Received Email:", email);
+        console.log("Login Attempt - Received Password:", password);
+
+        // Check if email exists
+        if (!email) {
+            return res.status(400).json({ msg: "Email is required" });
+        }
+
         const user = await User.findOne({ where: { email } });
 
         if (!user) {
+            console.log("User Not Found:", email);
             return res.status(400).json({ msg: "User not found" });
         }
 
-        // Compare the provided password with the stored hashed password
+        console.log("User Found:", user.email);
+
+        // Compare password
         const isPasswordValid = await bcrypt.compare(password, user.password);
 
         if (!isPasswordValid) {
+            console.log("Invalid Password Attempt for:", email);
             return res.status(400).json({ msg: "Invalid credentials" });
         }
+
+        console.log("Password Match - Generating Token");
 
         // Generate JWT token
         const token = jwt.sign(
@@ -56,6 +70,8 @@ const loginUser = async (req, res) => {
             process.env.JWT_SECRET,
             { expiresIn: "1h" }
         );
+
+        console.log("Token Generated:", token);
 
         res.json({ token });
     } catch (error) {
