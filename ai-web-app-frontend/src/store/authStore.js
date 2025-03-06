@@ -9,7 +9,7 @@ const useAuthStore = create((set) => ({
     logout: () => {
         localStorage.removeItem("token");
         set({ token: null });
-    }
+    },
 }));
 
 export default useAuthStore;
