@@ -73,11 +73,22 @@ const loginUser = async (req, res) => {
 
         console.log("Token Generated:", token);
 
-        res.json({ token });
+        // Return both token & user data
+        res.json({
+            token,
+            user: {
+                id: user.id,
+                email: user.email,
+                first_name: user.first_name,
+                last_name: user.last_name
+            }
+        });
+
     } catch (error) {
         console.error("Login Error:", error);
         res.status(500).json({ msg: "Server error during login" });
     }
 };
+
 
 module.exports = { registerUser, loginUser };

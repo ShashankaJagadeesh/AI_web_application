@@ -1,15 +1,13 @@
 import { create } from "zustand";
 
 const useAuthStore = create((set) => ({
-    token: localStorage.getItem("token") || null,
-    login: (token) => {
-        localStorage.setItem("token", token);
-        set({ token });
+    user: null,
+    token: null,
+    login: (token, user) => {
+        console.log("Storing user in auth store:", user); // Debugging log
+        set({ token, user });
     },
-    logout: () => {
-        localStorage.removeItem("token");
-        set({ token: null });
-    },
+    logout: () => set({ token: null, user: null }), // Clear user & token on logout
 }));
 
 export default useAuthStore;

@@ -15,12 +15,15 @@ function Register() {
     const handleRegister = async (e) => {
         e.preventDefault();
         setErrorMessage(null);
-
+    
         if (password !== confirmPassword) {
             setErrorMessage("Passwords do not match!");
             return;
         }
-
+    
+        // Debugging log before sending request
+        console.log("Registering User with Data:", { first_name, last_name, email, password });
+    
         try {
             await registerUser(first_name, last_name, email, password);
             alert("Registration Successful!");
@@ -30,6 +33,7 @@ function Register() {
             setErrorMessage(error.response?.data?.msg || "Registration failed.");
         }
     };
+    
 
     return (
         <div className="bg-dark text-white vh-100 d-flex align-items-center justify-content-center">

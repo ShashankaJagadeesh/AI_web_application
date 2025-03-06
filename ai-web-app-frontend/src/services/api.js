@@ -1,46 +1,41 @@
-
+import axios from "axios";
 
 const API_BASE_URL = "http://localhost:5000/api/auth"; // Backend URL
 
 export const generateAIResponse = async (query, option) => {
     try {
-        const response = await fetch("http://localhost:5000/api/ai/generate", { 
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ query, option })
-        });
+        const payload = { query, option };
+        console.log("Sending AI Request Payload:", payload); // Debugging log
 
-        if (!response.ok) {
-            throw new Error("Failed to generate AI response");
-        }
+        const response = await axios.post("http://localhost:5000/api/ai/generate", payload);
 
-        return await response.json();
+        console.log("AI Response Received:", response.data);
+        return response.data;
     } catch (error) {
-        console.error("AI API Error:", error);
-        throw error;
+        console.error("AI API Error:", error.response?.data || error.message);
+        throw new Error("Failed to generate AI response");
     }
 };
-
 
 
 export const registerUser = async (first_name, last_name, email, password) => {
     try {
-        const response = await fetch("http://localhost:5000/api/auth/register", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ first_name, last_name, email, password }) 
+        const payload = { first_name, last_name, email, password };
+
+        console.log("📤 Sending Registration Request Payload:", payload); // Debugging log
+
+        const response = await axios.post("http://localhost:5000/api/auth/register", payload, {
+            headers: { "Content-Type": "application/json" }
         });
 
-        if (!response.ok) {
-            throw new Error("Registration failed");
-        }
-
-        return await response.json();
+        console.log("✅ Registration Response:", response.data);
+        return response.data;
     } catch (error) {
-        console.error("Registration API Error:", error);
-        throw error;
+        console.error("🚨 Registration API Error:", error.response?.data || error.message);
+        throw new Error("Registration failed");
     }
 };
+
 
 
 export const loginUser = async (email, password) => {
