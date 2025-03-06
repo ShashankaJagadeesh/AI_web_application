@@ -1,7 +1,7 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { registerUser } from "../services/api";
-import React from "react";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 function Register() {
     const [first_name, setFirstName] = useState("");
@@ -15,89 +15,141 @@ function Register() {
     const handleRegister = async (e) => {
         e.preventDefault();
         setErrorMessage(null);
-    
+
         if (password !== confirmPassword) {
             setErrorMessage("Passwords do not match!");
             return;
         }
-    
+
         try {
-            await registerUser(first_name, last_name, email, password); 
+            await registerUser(first_name, last_name, email, password);
             alert("Registration Successful!");
-            navigate("/");
+            navigate("/login");
         } catch (error) {
             console.error("Registration Error:", error);
             setErrorMessage(error.response?.data?.msg || "Registration failed.");
         }
     };
-    
 
     return (
-        <div className="container-fluid vh-100 d-flex align-items-center justify-content-center bg-light">
-            <div className="row w-50 shadow-lg rounded-4 p-0 bg-white">
-                {/* Left Side - Information Section */}
-                <div className="col-md-6 d-flex flex-column justify-content-center text-white p-5 rounded-start"
-                    style={{ background: "linear-gradient(to right, #0056b3, #007bff)" }}>
-                    <h2 className="mb-3">Welcome!</h2>
-                    <p>Sign up and join our community. Get access to exclusive features and content.</p>
-                    <button
-                        onClick={() => navigate("/")}
-                        className="btn btn-light text-primary fw-bold px-4 py-3 rounded-3 mt-3 shadow-sm">
-                        Already Have an Account?
-                    </button>
-                </div>
+        <div className="bg-dark text-white vh-100 d-flex align-items-center justify-content-center">
+            {/* Navbar */}
+            <nav className="navbar navbar-dark bg-dark fixed-top px-4">
+                <h3 className="navbar-brand">AI Web App</h3>
+            </nav>
 
-                {/* Right Side - Registration Form */}
-                <div className="col-md-6 d-flex flex-column justify-content-center p-5">
-                    <h2 className="text-center fw-bold mb-4 text-dark">Create Your Account</h2>
-                    {errorMessage && <p className="text-danger text-center">{errorMessage}</p>}
-                    <form onSubmit={handleRegister}>
-                        <div className="row">
-                            <div className="col-md-6 mb-3">
-                                <label className="form-label">First Name</label>
-                                <input type="text" className="form-control rounded-3 p-3"
-                                    placeholder="Enter your first name"
-                                    value={first_name} onChange={(e) => setFirstName(e.target.value)}
-                                    required />
+            {/* Main Section */}
+            <div className="container">
+                <div className="row align-items-center">
+                    {/* Left Side - AI Branding */}
+                    <div className="col-md-6 text-center">
+                        <h1 className="fw-bold text-white display-4">Join AI Revolution</h1>
+                        <p className="lead text-warning">Sign up to explore AI-powered insights.</p>
+
+                        <div className="d-flex justify-content-center mt-4">
+                            <div className="text-center mx-3">
+                                <img src="https://cdn-icons-png.flaticon.com/512/2838/2838912.png" width="80" alt="AI Security" />
+                                <h5 className="mt-2">Secure AI</h5>
                             </div>
-                            <div className="col-md-6 mb-3">
-                                <label className="form-label">Last Name</label>
-                                <input type="text" className="form-control rounded-3 p-3"
-                                    placeholder="Enter your last name"
-                                    value={last_name} onChange={(e) => setLastName(e.target.value)}
-                                    required />
+                            <div className="text-center mx-3">
+                                <img src="https://cdn-icons-png.flaticon.com/512/2602/2602105.png" width="80" alt="Smart AI" />
+                                <h5 className="mt-2">Smart AI</h5>
                             </div>
-                        </div>
-                        <div className="mb-3">
-                            <label className="form-label">Email Address</label>
-                            <input type="email" className="form-control rounded-3 p-3"
-                                placeholder="Enter your email"
-                                value={email} onChange={(e) => setEmail(e.target.value)}
-                                required />
-                        </div>
-                        <div className="row">
-                            <div className="col-md-6 mb-3">
-                                <label className="form-label">Password</label>
-                                <input type="password" className="form-control rounded-3 p-3"
-                                    placeholder="Enter password"
-                                    value={password} onChange={(e) => setPassword(e.target.value)}
-                                    required />
-                            </div>
-                            <div className="col-md-6 mb-3">
-                                <label className="form-label">Confirm Password</label>
-                                <input type="password" className={`form-control rounded-3 p-3 ${password && confirmPassword && (password !== confirmPassword) ? "border-danger" : ""}`}
-                                    placeholder="Confirm password"
-                                    value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)}
-                                    required />
-                                {password && confirmPassword && password !== confirmPassword && (
-                                    <small className="text-danger">Passwords do not match</small>
-                                )}
+                            <div className="text-center mx-3">
+                                <img src="https://cdn-icons-png.flaticon.com/512/2736/2736838.png" width="80" alt="Fast Insights" />
+                                <h5 className="mt-2">Fast Insights</h5>
                             </div>
                         </div>
-                        <button type="submit" className="btn btn-primary w-100 py-3 rounded-3 shadow-sm">
-                            Register
-                        </button>
-                    </form>
+                    </div>
+
+                    {/* Right Side - Registration Form */}
+                    <div className="col-md-6">
+                        <div className="card bg-white text-dark shadow-lg rounded-4 p-5">
+                            <h2 className="text-center fw-bold mb-4">Create Your Account</h2>
+                            {errorMessage && <p className="text-danger text-center">{errorMessage}</p>}
+                            <form onSubmit={handleRegister}>
+                                <div className="row">
+                                    <div className="col-md-6 mb-3">
+                                        <label className="form-label">First Name</label>
+                                        <input
+                                            type="text"
+                                            className="form-control rounded-3 p-3"
+                                            placeholder="Enter your first name"
+                                            value={first_name}
+                                            onChange={(e) => setFirstName(e.target.value)}
+                                            required
+                                        />
+                                    </div>
+                                    <div className="col-md-6 mb-3">
+                                        <label className="form-label">Last Name</label>
+                                        <input
+                                            type="text"
+                                            className="form-control rounded-3 p-3"
+                                            placeholder="Enter your last name"
+                                            value={last_name}
+                                            onChange={(e) => setLastName(e.target.value)}
+                                            required
+                                        />
+                                    </div>
+                                </div>
+                                <div className="mb-3">
+                                    <label className="form-label">Email Address</label>
+                                    <input
+                                        type="email"
+                                        className="form-control rounded-3 p-3"
+                                        placeholder="Enter your email"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                        required
+                                    />
+                                </div>
+                                <div className="row">
+                                    <div className="col-md-6 mb-3">
+                                        <label className="form-label">Password</label>
+                                        <input
+                                            type="password"
+                                            className="form-control rounded-3 p-3"
+                                            placeholder="Enter password"
+                                            value={password}
+                                            onChange={(e) => setPassword(e.target.value)}
+                                            required
+                                        />
+                                    </div>
+                                    <div className="col-md-6 mb-3">
+                                        <label className="form-label">Confirm Password</label>
+                                        <input
+                                            type="password"
+                                            className={`form-control rounded-3 p-3 ${
+                                                password && confirmPassword && (password !== confirmPassword) ? "border-danger" : ""
+                                            }`}
+                                            placeholder="Confirm password"
+                                            value={confirmPassword}
+                                            onChange={(e) => setConfirmPassword(e.target.value)}
+                                            required
+                                        />
+                                        {password && confirmPassword && password !== confirmPassword && (
+                                            <small className="text-danger">Passwords do not match</small>
+                                        )}
+                                    </div>
+                                </div>
+                                <button type="submit" className="btn btn-primary w-100 py-3 rounded-3 shadow-sm">
+                                    Register
+                                </button>
+                            </form>
+
+                            {/* Divider */}
+                            <div className="text-center my-3">
+                                <span className="text-muted">or</span>
+                            </div>
+
+                            {/* Already Have an Account? */}
+                            <button
+                                onClick={() => navigate("/login")}
+                                className="btn btn-outline-primary w-100 py-3 rounded-3 shadow-sm">
+                                Already Have an Account?
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
