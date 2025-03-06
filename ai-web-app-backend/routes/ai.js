@@ -1,5 +1,6 @@
 const express = require("express");
 const axios = require("axios");
+require("dotenv").config(); 
 
 const router = express.Router();
 
@@ -13,18 +14,24 @@ router.post("/generate", async (req, res) => {
 
     try {
         const response = await axios.post(
-            "https://api.openai.com/v1/completions", // Makes API request to OpenAI
+            "https://api.mistral.ai/v1/chat/completions", // Mistral API endpoint
             {
-                model: "text-davinci-003", // AI model I am using
-                prompt: `${option}: ${query}`, //Input query
-                max_tokens: 100, // Limiting response length
+                model: "mistral-small", 
+                messages: [{ role: "user", content: `${option}: ${query}` }],
+                max_tokens: 100
             },
-            { headers: { Authorization: `Bearer ${process.env.OPENAI_API_KEY}` } }
+            {
+                headers: {
+                    "Authorization": `Bearer ${process.env.MISTRAL_API_KEY}`,
+                    "Content-Type": "application/json"
+                }
+            }
         );
 
-        res.json({ result: response.data.choices[0].text });
+        res.json({ result: response.data.choices[0].message.content });
     } catch (err) {
-        res.status(500).json({ msg: err.message });
+        console.error("Mistral AI Error:", err.response?.data || err.message);
+        res.status(500).json({ msg: "Failed to generate AI response" });
     }
 });
 
