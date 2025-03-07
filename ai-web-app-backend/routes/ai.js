@@ -4,21 +4,28 @@ const axios = require("axios");
 const router = express.Router();
 
 router.post("/generate", async (req, res) => {
-    console.log("Received AI Request:", req.body); // For debugging frontend request of API
+    console.log("Received AI Request:", req.body);
 
     const { query, option } = req.body;
 
-    if (!query || !option) {
-        console.error("Error: Missing 'query' or 'option' in request body.");
-        return res.status(422).json({ msg: "Missing 'query' or 'option' in request body." });
+    // Check for missing fields
+    if (!option) {
+        console.error("Error: Missing 'option' in request body.");
+        return res.status(422).json({ msg: "Missing 'option' in request body." });
     }
-
-    if (!["calories", "translate", "summarize"].includes(option)) {
+    if (!["calories", "translate", "summarize", "chat"].includes(option)) {
         console.error("Error: Invalid option selected.");
         return res.status(400).json({ msg: "Invalid option selected." });
     }
+    if (!query && option !== "chat") {
+        // For 'chat', we allow an empty or multi-turn string as the query
+        console.error("Error: Missing 'query' in request body for single-prompt mode.");
+        return res.status(422).json({ msg: "Missing 'query' for single-prompt request." });
+    }
 
+    // Build a single user prompt
     let structuredPrompt = "";
+
     switch (option) {
         case "calories":
             structuredPrompt = `Provide detailed calorie information for: ${query}`;
@@ -29,11 +36,15 @@ router.post("/generate", async (req, res) => {
         case "summarize":
             structuredPrompt = `Summarize this text in a short paragraph: ${query}`;
             break;
+        case "chat":
+            // For 'chat', just take the entire `query` as-is (which can contain multi-turn text).
+            structuredPrompt = query;
+            break;
         default:
             structuredPrompt = query;
     }
 
-    // For mistralAI, had to use 'messages' format instead of 'prompt'
+    // Mistral requires a 'messages' format
     const requestBody = {
         model: "mistral-small",
         messages: [
@@ -64,6 +75,5 @@ router.post("/generate", async (req, res) => {
         res.status(500).json({ msg: "Error processing AI request", error: err.message });
     }
 });
-
 
 module.exports = router;
