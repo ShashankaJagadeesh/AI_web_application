@@ -150,34 +150,176 @@ function Dashboard() {
                     <span className="text-warning"> Translate Text</span>, and 
                     <span className="text-warning"> Summarize PDFs</span> effortlessly.
                 </p>
+                {/* Why Choose Our AI Section */}
+                <div className="container mt-5">
+                <h2 className="text-center fw-bold text-primary mb-4">Why Choose Our AI?</h2>
+
+                <div className="row g-4">
+                    <div className="col-md-4">
+                    <div
+                        className="card h-100 border-0 shadow card-lift"
+                        style={{
+                        background: "linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%)",
+                        borderRadius: "1rem"
+                        }}
+                    >
+                        <div className="card-body text-center">
+                        <img
+                            src="https://cdn-icons-png.flaticon.com/512/1258/1258875.png"
+                            alt="Speed Icon"
+                            style={{ width: "60px" }}
+                            className="mb-3"
+                        />
+                        <h5 className="card-title fw-bold">Lightning-Fast Responses</h5>
+                        <p className="card-text small">
+                            Our AI processes your queries in seconds, saving you valuable time and effort.
+                        </p>
+                        </div>
+                    </div>
+                    </div>
+
+                    <div className="col-md-4">
+                    <div
+                        className="card h-100 border-0 shadow card-lift"
+                        style={{
+                        background: "linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%)",
+                        borderRadius: "1rem"
+                        }}
+                    >
+                        <div className="card-body text-center">
+                        <img
+                            src="https://cdn-icons-png.flaticon.com/512/4201/4201973.png"
+                            alt="Accuracy Icon"
+                            style={{ width: "60px" }}
+                            className="mb-3"
+                        />
+                        <h5 className="card-title fw-bold">High Accuracy</h5>
+                        <p className="card-text small">
+                            Benefit from advanced AI models that provide precise translations, summaries, and insights.
+                        </p>
+                        </div>
+                    </div>
+                    </div>
+
+                    <div className="col-md-4">
+                    <div
+                        className="card h-100 border-0 shadow card-lift"
+                        style={{
+                        background: "linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%)",
+                        borderRadius: "1rem"
+                        }}
+                    >
+                        <div className="card-body text-center">
+                        <img
+                            src="https://cdn-icons-png.flaticon.com/512/3388/3388645.png"
+                            alt="Security Icon"
+                            style={{ width: "60px" }}
+                            className="mb-3"
+                        />
+                        <h5 className="card-title fw-bold">Secure & Private</h5>
+                        <p className="card-text small">
+                            We prioritize your data security and privacy, ensuring your queries remain confidential.
+                        </p>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+                </div>
+
 
                 {/* Instructions */}
                 <div className="container text-center my-5">
-                    <h2 className="fw-bold text-primary">How It Works</h2>
-                    <div className="row mt-4">
-                        <div className="col-md-4">
-                            <img src="https://cdn-icons-png.freepik.com/512/5485/5485853.png" width="80" alt="Step 1" />
-                            <h5 className="mt-2">Step 1: Choose a Function</h5>
-                            <p className="small">Select whether you want to get Calorie information, Translate text, or Summarize a PDF.</p>
-                        </div>
-                        <div className="col-md-4">
-                            <img src="https://cdn-icons-png.flaticon.com/512/1005/1005141.png" width="80" alt="Step 2" />
-                            <h5 className="mt-2">Step 2: Enter Your Query</h5>
-                            <p className="small">Type in your text, upload your file, or provide the necessary details for AI processing.</p>
-                        </div>
-                        <div className="col-md-4">
-                            <img src="https://cdn-icons-png.freepik.com/512/16856/16856134.png" width="80" alt="Step 3" />
-                            <h5 className="mt-2">Step 3: Get AI Response</h5>
-                            <p className="small">Click "Generate" and receive your AI-powered results instantly.</p>
-                        </div>
-                    </div>
-                </div>
+                    <h2 className="fw-bold text-primary mb-4">How It Works</h2>
 
-                {/* Get Started Button */}
-                <button className="btn btn-primary mt-4 px-5 py-2" onClick={() => document.getElementById("ai-section").scrollIntoView({ behavior: "smooth" })}>
-                    Get Started
-                </button>
-                
+                    <div
+                        id="howItWorksCarousel"
+                        className="carousel slide"
+                        data-bs-ride="carousel"
+                        style={{ maxWidth: "700px", margin: "0 auto" }}
+                    >
+                        <div className="carousel-inner" style={{ minHeight: "150px" }}>
+                        {/* Slide 1 */}
+                        <div className="carousel-item active">
+                            <div className="d-flex flex-column align-items-center justify-content-center h-100">
+                            <img
+                                src="https://cdn-icons-png.freepik.com/512/5485/5485853.png"
+                                alt="Step 1"
+                                style={{ width: "80px" }}
+                                className="mb-3"
+                            />
+                            <h5 className="fw-bold">Step 1: Choose a Function</h5>
+                            <p className="small">
+                                Select whether you want Calorie information, Translate text, or Summarize a PDF.
+                            </p>
+                            </div>
+                        </div>
+
+                        {/* Slide 2 */}
+                        <div className="carousel-item">
+                            <div className="d-flex flex-column align-items-center justify-content-center h-100">
+                            <img
+                                src="https://cdn-icons-png.flaticon.com/512/1005/1005141.png"
+                                alt="Step 2"
+                                style={{ width: "80px" }}
+                                className="mb-3"
+                            />
+                            <h5 className="fw-bold">Step 2: Enter Your Query</h5>
+                            <p className="small">
+                                Type in your text, upload a file, or provide details for AI processing.
+                            </p>
+                            </div>
+                        </div>
+
+                        {/* Slide 3 */}
+                        <div className="carousel-item">
+                            <div className="d-flex flex-column align-items-center justify-content-center h-100">
+                            <img
+                                src="https://cdn-icons-png.freepik.com/512/16856/16856134.png"
+                                alt="Step 3"
+                                style={{ width: "80px" }}
+                                className="mb-3"
+                            />
+                            <h5 className="fw-bold">Step 3: Get AI Response</h5>
+                            <p className="small">
+                                Click “Generate” and receive your AI-powered results instantly.
+                            </p>
+                            </div>
+                        </div>
+                        </div>
+
+                    {/* Carousel Controls */}
+                    <button
+                        className="carousel-control-prev"
+                        type="button"
+                        data-bs-target="#howItWorksCarousel"
+                        data-bs-slide="prev"
+                    >
+                        <span className="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span className="visually-hidden">Previous</span>
+                        </button>
+                    <button
+                        className="carousel-control-next"
+                        type="button"
+                        data-bs-target="#howItWorksCarousel"
+                        data-bs-slide="next"
+                    >
+                        <span className="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span className="visually-hidden">Next</span>
+                        </button>
+                    </div>
+
+                    {/* Get Started Button*/}
+                    <div style={{ marginTop: "3rem" }}>
+                        <button
+                        className="btn btn-primary px-5 py-2"
+                        onClick={() =>
+                            document.getElementById("ai-section").scrollIntoView({ behavior: "smooth" })
+                        }
+                        >
+                        Get Started
+                        </button>
+                    </div>
+                 </div>           
             </div>
 
             {/* AI Section */}

@@ -4,6 +4,8 @@ import Register from "./pages/Register.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
 import useAuthStore from "./store/authStore"; // Ensure auth state is used
 import React from "react";
+import './App.css'; // or your global css file
+
 
 function App() {
   const { token } = useAuthStore(); // Check if user is logged in
