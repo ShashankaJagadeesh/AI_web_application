@@ -4,6 +4,7 @@ import useAuthStore from "../store/authStore";
 import { generateAIResponse } from "../services/api";
 import "bootstrap/dist/css/bootstrap.min.css";
 import ChatBot from "../services/chatbot.jsx";
+import { useCallback } from "react";
 
 function Dashboard() {
     const navigate = useNavigate();
@@ -15,8 +16,45 @@ function Dashboard() {
     const { token } = useAuthStore();
     const [queryHistory, setQueryHistory] = useState([]);
     const [showChat, setShowChat] = useState(false);
+    const [isReading, setIsReading] = useState(false);
+    const [lastActivity, setLastActivity] = useState(Date.now());
 
+    const SESSION_TIMEOUT = 600000; // 10 minutes inactivity causes logging out of user
 
+    const resetTimer = () => {
+        setLastActivity(Date.now());
+    };
+    
+    useEffect(() => {
+        const events = ["mousemove", "keydown", "click", "scroll"];
+        events.forEach(event => window.addEventListener(event, resetTimer));
+    
+        return () => {
+            events.forEach(event => window.removeEventListener(event, resetTimer));
+        };
+    }, []);
+    
+    const handleLogout = useCallback(() => {
+        const user = useAuthStore.getState().user;
+        if (user && user.id) {
+            const storageKey = `queryHistory_${user.id}`;
+            localStorage.removeItem(storageKey);
+        }
+        logout();
+        navigate("/login");
+    }, [logout, navigate]); // Dependencies
+    
+    useEffect(() => {
+        const interval = setInterval(() => {
+            if (Date.now() - lastActivity > SESSION_TIMEOUT) {
+                alert("Session expired due to inactivity. You will be logged out.");
+                handleLogout();
+            }
+        }, 10000);
+    
+        return () => clearInterval(interval);
+    }, [lastActivity, handleLogout]);
+    
     // Dark/Light Mode Toggle
     const [theme, setTheme] = useState(localStorage.getItem("theme") || "dark");
 
@@ -56,7 +94,29 @@ function Dashboard() {
         setQueryHistory(storedHistory);
     }, []);
     
+
     
+
+    const handleToggleReading = () => {
+    if (!response) return;
+
+    // If we're already reading, cancel speech
+    if (isReading) {
+        window.speechSynthesis.cancel();
+        setIsReading(false);
+    } else {
+        // Start reading
+        const utterance = new SpeechSynthesisUtterance(response);
+        // Optional: utterance.lang = "en-US"; // or pitch, rate, etc.
+
+        // When reading is finished or canceled, reset state
+        utterance.onend = () => setIsReading(false);
+        utterance.onerror = () => setIsReading(false);
+
+        window.speechSynthesis.speak(utterance);
+        setIsReading(true);
+    }
+    };
 
     const handleGenerate = async () => {
         if (!query.trim()) return alert("Please enter a query!");
@@ -114,18 +174,6 @@ function Dashboard() {
                 return query; // Default behavior if option is unknown
         }
     };
-    
-    const handleLogout = () => {
-        const user = useAuthStore.getState().user;
-        if (user && user.id) {
-            const storageKey = `queryHistory_${user.id}`;
-            localStorage.removeItem(storageKey);  // Clear only this user's queries
-        }
-    
-        logout();
-        navigate("/login");
-    };
-    
 
     return (
         <div className={theme === "dark" ? "bg-dark text-white" : "bg-light text-dark"}>
@@ -146,9 +194,9 @@ function Dashboard() {
             <div className="container-fluid text-center py-5">
                 <h1 className="fw-bold display-4">Welcome to AI Dashboard</h1>
                 <p className="lead">
-                    Use AI to <span className="text-warning">Generate Insights</span>, 
-                    <span className="text-warning"> Translate Text</span>, and 
-                    <span className="text-warning"> Summarize PDFs</span> effortlessly.
+                    Use AI to <span className="fw-bold">Generate Insights</span>, 
+                    <span className="fw-bold"> Translate Text</span>, and 
+                    <span className="fw-bold"> Summarize PDFs</span> effortlessly.
                 </p>
                 {/* Why Choose Our AI Section */}
                 <div className="container mt-5">
@@ -165,7 +213,7 @@ function Dashboard() {
                     >
                         <div className="card-body text-center">
                         <img
-                            src="https://cdn-icons-png.flaticon.com/512/1258/1258875.png"
+                            src="https://cdn-icons-png.freepik.com/256/15017/15017446.png?semt=ais_hybrid"
                             alt="Speed Icon"
                             style={{ width: "60px" }}
                             className="mb-3"
@@ -188,7 +236,7 @@ function Dashboard() {
                     >
                         <div className="card-body text-center">
                         <img
-                            src="https://cdn-icons-png.flaticon.com/512/4201/4201973.png"
+                            src="https://i0.wp.com/aitoolsarena.com/wp-content/uploads/2023/02/cropped-AI-Tools-Arena-512.png?fit=512%2C512&ssl=1"
                             alt="Accuracy Icon"
                             style={{ width: "60px" }}
                             className="mb-3"
@@ -211,7 +259,7 @@ function Dashboard() {
                     >
                         <div className="card-body text-center">
                         <img
-                            src="https://cdn-icons-png.flaticon.com/512/3388/3388645.png"
+                            src="https://cdn-icons-png.freepik.com/512/10108/10108414.png"
                             alt="Security Icon"
                             style={{ width: "60px" }}
                             className="mb-3"
@@ -407,11 +455,12 @@ function Dashboard() {
                     {/* Response Section */}
                     <div className="mt-3">
                     <h5 className="fw-bold text-dark">AI Response</h5>
-                    <p className="text-muted">{loading ? "Fetching response..." : response || "Your result will appear here."}</p>
+                    <p className="text-muted">
+                        {loading ? "Fetching response..." : response || "Your result will appear here."}
+                    </p>
 
                     {response && (
                         <div className="d-flex gap-2">
-                        {/* Copy to Clipboard Button */}
                         <button
                             className="btn btn-outline-secondary mt-3"
                             onClick={() => navigator.clipboard.writeText(response)}
@@ -419,25 +468,33 @@ function Dashboard() {
                             Copy AI Response
                         </button>
 
-                        {/* Download AI Response Button */}
-                        <button className="btn btn-outline-success mt-3"
+                        <button
+                            className="btn btn-outline-success mt-3"
                             onClick={() => {
-                        const blob = new Blob([response], { type: "text/plain" });
-                        const link = document.createElement("a");
-                        link.href = URL.createObjectURL(blob);
-                        link.download = "AI_Response.txt";
-                        document.body.appendChild(link);
-                        link.click();
-                         document.body.removeChild(link);
-                        }}
+                            const blob = new Blob([response], { type: "text/plain" });
+                            const link = document.createElement("a");
+                            link.href = URL.createObjectURL(blob);
+                            link.download = "AI_Response.txt";
+                            document.body.appendChild(link);
+                            link.click();
+                            document.body.removeChild(link);
+                            }}
                         >
                             Download AI Response
                         </button>
-                    </div>
-                        
-                    )}
-                    </div>
-                </div>
+
+                        {/* Read Button */}
+                        <button
+                                    className="btn btn-outline-primary mt-3"
+                                    onClick={handleToggleReading}
+                                >
+                                    {isReading ? "Stop Reading" : "Read AI Response"}
+                                </button>
+                            </div>
+                                
+                            )}
+                            </div>
+                        </div>
                 {/* Floating Chat Toggle Button */}
                 <button
                 className="btn btn-secondary"
@@ -446,7 +503,12 @@ function Dashboard() {
                     bottom: "2rem",
                     right: "2rem",
                     zIndex: 9999,
+                    padding: "10px 15px",
+                    fontSize: "16px",
+                    borderRadius: "8px",
+                    background: "#007bff",
                 }}
+                
                 onClick={() => setShowChat(!showChat)}
                 >
                 {showChat ? "Close Chat" : "Chat"}
@@ -459,15 +521,16 @@ function Dashboard() {
                     position: "fixed",
                     bottom: "5rem",
                     right: "2rem",
-                    width: "300px",
-                    height: "400px",
-                    background: "#fff",
-                    boxShadow: "0 4px 10px rgba(0,0,0,0.3)",
-                    borderRadius: "0.5rem",
+                    width: "350px",
+                    height: "500px",
+                    background: "#007bff",
+                    boxShadow: "0 4px 15px rgba(8, 8, 8, 0.93)", 
+                    borderRadius: "12px",
                     zIndex: 10000,
-                    overflow: "hidden",         // Clip child overflow
-                    display: "flex",           // Allows ChatBot to fill
-                    flexDirection: "column"
+                    overflow: "hidden",
+                    display: "flex",
+                    flexDirection: "column",
+                    border: "2px solid #ccc", 
                   }}
                 >
                     <ChatBot />
@@ -479,7 +542,6 @@ function Dashboard() {
     );
     
 }
-
 
 
 export default Dashboard;

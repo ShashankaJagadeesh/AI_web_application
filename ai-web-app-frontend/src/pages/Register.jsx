@@ -52,15 +52,15 @@ function Register() {
 
                         <div className="d-flex justify-content-center mt-4">
                             <div className="text-center mx-3">
-                                <img src="https://cdn-icons-png.flaticon.com/512/2838/2838912.png" width="80" alt="AI Security" />
+                                <img src="https://cdn-icons-png.freepik.com/512/10108/10108414.png" width="80" alt="AI Security" />
                                 <h5 className="mt-2">Secure AI</h5>
                             </div>
                             <div className="text-center mx-3">
-                                <img src="https://cdn-icons-png.flaticon.com/512/2602/2602105.png" width="80" alt="Smart AI" />
+                                <img src="https://i0.wp.com/aitoolsarena.com/wp-content/uploads/2023/02/cropped-AI-Tools-Arena-512.png?fit=512%2C512&ssl=1" width="80" alt="Smart AI" />
                                 <h5 className="mt-2">Smart AI</h5>
                             </div>
                             <div className="text-center mx-3">
-                                <img src="https://cdn-icons-png.flaticon.com/512/2736/2736838.png" width="80" alt="Fast Insights" />
+                                <img src="https://cdn-icons-png.freepik.com/256/15017/15017446.png?semt=ais_hybrid" width="80" alt="Fast Insights" />
                                 <h5 className="mt-2">Fast Insights</h5>
                             </div>
                         </div>
