@@ -11,7 +11,7 @@ const authenticateToken = (req, res, next) => {
       return res.status(403).json({ msg: "Invalid Token" });
     }
 
-    console.log("Decoded token:", decoded); // Debug log (check in your Node terminal)
+    console.log("Decoded token:", decoded); // Debug log 
     if (!decoded.userId) {
       return res.status(403).json({ msg: "User ID missing in token" });
     }

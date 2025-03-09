@@ -9,7 +9,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <Router>  {/* ✅ Wrap App inside Router */}
+    <Router>
       <App />
     </Router>
   </StrictMode>

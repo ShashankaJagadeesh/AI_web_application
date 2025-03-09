@@ -5,7 +5,7 @@ import { generateAIResponse } from "../services/api";
 import "bootstrap/dist/css/bootstrap.min.css";
 import ChatBot from "../services/chatbot.jsx";
 
-// Import your reusable components here
+//Components
 import Button from "../components/Button";
 import FeatureCard from "../components/FeatureCard";
 import QueryHistory from "../components/QueryHistory";
@@ -125,7 +125,7 @@ function Dashboard() {
       const aiResponse = await generateAIResponse(structuredQuery, option);
       setResponse(aiResponse.result);
   
-      // 2. Update local storage (your existing code)
+      // 2. Update local storage 
       const user = useAuthStore.getState().user;
       if (!user || !user.id) {
         console.error("User ID not found.");
@@ -144,15 +144,14 @@ function Dashboard() {
   
       console.log("Updated Query History:", updatedHistory);
   
-      // 3. **SAVE QUERY TO DB** (Add this fetch call)
-      // Make sure you have a valid token from your auth store or localStorage
+      // 3. Save Query to DB
       const tokenFromStore = useAuthStore.getState().token; 
       if (!tokenFromStore) {
         console.error("No token found in auth store");
         return;
       }
   
-      // Post the query to your /save-query endpoint
+      // Post the query to /save-query endpoint
       const saveResponse = await fetch("http://localhost:5000/api/save-query", {
         method: "POST",
         headers: {
@@ -193,8 +192,6 @@ function Dashboard() {
     }
   };
 
-  // ... inside your Dashboard component above the return statement
-
   const fetchQueryHistoryFromDB = async () => {
     try {
       const tokenFromStore = localStorage.getItem("token") || useAuthStore.getState().token;
@@ -203,7 +200,6 @@ function Dashboard() {
       });
       if (res.ok) {
         let data = await res.json();
-        // Transform { query_text, option_type } to { query, option }
         data = data.map(item => ({
           query: item.query_text,
           option: item.option_type,
@@ -248,7 +244,7 @@ function Dashboard() {
         <div className="container mt-5">
           <h2 className="text-center fw-bold text-primary mb-4">Why Choose Our AI?</h2>
           <div className="row g-4">
-            {/* Replaced the inline cards with <FeatureCard> */}
+            {/*<FeatureCards> */}
             <div className="col-md-4">
               <FeatureCard
                 icon="https://cdn-icons-png.freepik.com/256/15017/15017446.png?semt=ais_hybrid"
@@ -436,10 +432,10 @@ function Dashboard() {
         </button>
         </div>
 
-          {/* Query History: Use <QueryHistory> */}
+          {/* Query History: Using <QueryHistory> */}
           <QueryHistory queryHistory={queryHistory} setQuery={setQuery} />
 
-          {/* Response Section: Use <AIResponse> */}
+          {/* Response Section: Using <AIResponse> */}
           <AIResponse
             response={response}
             loading={loading}
