@@ -27,8 +27,8 @@ app.get("/", (req, res) => {
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/ai", aiRoutes);
-app.use("/api", protectedRoutes);
 app.use("/api", queryRoutes);
+app.use("/api", protectedRoutes);
 
 // Used for Debugging Sequelize Connection
 console.log(typeof sequelize); // Should print "object"

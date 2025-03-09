@@ -95,6 +95,8 @@ function Dashboard() {
     setQueryHistory(storedHistory);
   }, []);
 
+  
+
   const handleToggleReading = () => {
     if (!response) return;
 
@@ -190,6 +192,33 @@ function Dashboard() {
         return query; // Default behavior if option is unknown
     }
   };
+
+  // ... inside your Dashboard component above the return statement
+
+  const fetchQueryHistoryFromDB = async () => {
+    try {
+      const tokenFromStore = localStorage.getItem("token") || useAuthStore.getState().token;
+      const res = await fetch("http://localhost:5000/api/query-history", {
+        headers: { "Authorization": `Bearer ${tokenFromStore}` },
+      });
+      if (res.ok) {
+        let data = await res.json();
+        // Transform { query_text, option_type } to { query, option }
+        data = data.map(item => ({
+          query: item.query_text,
+          option: item.option_type,
+          created_at: item.created_at
+        }));
+        setQueryHistory(data);
+        console.log("Transformed Query History from DB:", data);
+      } else {
+        console.error("Failed to fetch query history from DB");
+      }
+    } catch (error) {
+      console.error("Error fetching query history from DB:", error);
+    }
+  };
+
 
   return (
     <div className={theme === "dark" ? "bg-dark text-white" : "bg-light text-dark"}>
@@ -395,6 +424,17 @@ function Dashboard() {
               {loading ? "Loading..." : "Generate"}
             </button>
           </div>
+
+          
+            {/* Button to fetch saved queries from DB */}
+        <div className="d-flex justify-content-start mb-3">
+        <button
+            className="btn btn-info"
+            onClick={fetchQueryHistoryFromDB}
+        >   
+            Show Saved Queries
+        </button>
+        </div>
 
           {/* Query History: Use <QueryHistory> */}
           <QueryHistory queryHistory={queryHistory} setQuery={setQuery} />

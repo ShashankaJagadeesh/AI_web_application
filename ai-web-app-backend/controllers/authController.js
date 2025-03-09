@@ -68,10 +68,12 @@ const loginUser = async (req, res) => {
         const token = jwt.sign(
             { userId: user.id },
             process.env.JWT_SECRET,
-            { expiresIn: "1h" }
+            { expiresIn: "5h" }
         );
+        
+        console.log("New token generated:", token);
+        console.log("Decoded new token payload:", jwt.decode(token));
 
-        console.log("Token Generated:", token);
 
         // Return both token & user data
         res.json({

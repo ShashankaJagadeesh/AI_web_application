@@ -27,4 +27,20 @@ router.post("/save-query", authMiddleware, async (req, res) => {
   }
 });
 
+// Fetch Query History
+router.get("/query-history", authMiddleware, async (req, res) => {
+    const user_id = req.user.id; // Provided by authMiddleware
+  
+    try {
+      const [queries] = await db.query(
+        "SELECT query_text, option_type, created_at FROM queries WHERE user_id = ? ORDER BY created_at DESC LIMIT 5",
+        { replacements: [user_id] }
+      );
+      res.json(queries);
+    } catch (error) {
+      console.error("Database error:", error);
+      res.status(500).json({ error: "Failed to fetch query history" });
+    }
+  });
+
 module.exports = router;

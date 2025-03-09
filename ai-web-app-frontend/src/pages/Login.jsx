@@ -10,6 +10,8 @@ function Login() {
     const navigate = useNavigate();
     const login = useAuthStore((state) => state.login);
 
+    
+
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
@@ -24,6 +26,9 @@ function Login() {
     
             // Store both token & user in Zustand store
             login(response.token, response.user);
+
+            localStorage.setItem("token", response.token);
+
     
             navigate("/dashboard");
         } catch (error) {
