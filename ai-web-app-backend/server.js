@@ -11,6 +11,7 @@ const authRoutes = require("./routes/auth");
 const authMiddleware = require("./middleware/authMiddleware");
 const aiRoutes = require("./routes/ai");
 const protectedRoutes = require("./routes/protected");
+const queryRoutes = require("./routes/queries");
 
 dotenv.config();
 
@@ -27,6 +28,7 @@ app.get("/", (req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/ai", aiRoutes);
 app.use("/api", protectedRoutes);
+app.use("/api", queryRoutes);
 
 // Used for Debugging Sequelize Connection
 console.log(typeof sequelize); // Should print "object"

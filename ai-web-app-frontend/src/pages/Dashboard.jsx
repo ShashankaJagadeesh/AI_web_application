@@ -63,8 +63,6 @@ function Dashboard() {
   // Dark/Light Mode Toggle
   const [theme, setTheme] = useState(localStorage.getItem("theme") || "dark");
 
-  console.log("Auth Store State:", useAuthStore.getState());
-
   useEffect(() => {
     document.body.className = theme;
     localStorage.setItem("theme", theme);
@@ -115,36 +113,63 @@ function Dashboard() {
 
   const handleGenerate = async () => {
     if (!query.trim()) return alert("Please enter a query!");
-
+  
     setLoading(true);
     setResponse("");
-
+  
     try {
+      // 1. Generate AI response
       const structuredQuery = formatQuery(query, option);
       const aiResponse = await generateAIResponse(structuredQuery, option);
       setResponse(aiResponse.result);
-
-      // Get logged-in user
+  
+      // 2. Update local storage (your existing code)
       const user = useAuthStore.getState().user;
       if (!user || !user.id) {
         console.error("User ID not found.");
         return;
       }
-
+  
       const storageKey = `queryHistory_${user.id}`;
       let updatedHistory = JSON.parse(localStorage.getItem(storageKey)) || [];
-
-      // Ensure only objects with query & option are stored
-      updatedHistory = updatedHistory.filter(item => typeof item === "object" && item.query && item.option);
-
-      // Add the new query, keeping only the last 5
+      updatedHistory = updatedHistory.filter(
+        (item) => typeof item === "object" && item.query && item.option
+      );
       const newQuery = { query: query.trim(), option };
       updatedHistory = [newQuery, ...updatedHistory].slice(0, 5);
-
       setQueryHistory(updatedHistory);
       localStorage.setItem(storageKey, JSON.stringify(updatedHistory));
-
-      console.log("Updated Query History:", updatedHistory); // Debugging log
+  
+      console.log("Updated Query History:", updatedHistory);
+  
+      // 3. **SAVE QUERY TO DB** (Add this fetch call)
+      // Make sure you have a valid token from your auth store or localStorage
+      const tokenFromStore = useAuthStore.getState().token; 
+      if (!tokenFromStore) {
+        console.error("No token found in auth store");
+        return;
+      }
+  
+      // Post the query to your /save-query endpoint
+      const saveResponse = await fetch("http://localhost:5000/api/save-query", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${tokenFromStore}`
+        },
+        body: JSON.stringify({
+          query_text: query.trim(),
+          option_type: option
+        })
+      });
+  
+      if (!saveResponse.ok) {
+        const errorData = await saveResponse.json();
+        console.error("Error saving query to DB:", errorData);
+      } else {
+        console.log("Query saved to DB successfully!");
+      }
+  
     } catch (error) {
       console.error("AI Request Error:", error);
       alert("Failed to generate AI response.");
@@ -152,7 +177,7 @@ function Dashboard() {
       setLoading(false);
     }
   };
-
+  
   const formatQuery = (query, option) => {
     switch (option) {
       case "calories":
