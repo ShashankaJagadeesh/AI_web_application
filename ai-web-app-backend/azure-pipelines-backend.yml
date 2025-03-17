@@ -1,0 +1,26 @@
+trigger:
+  branches:
+    include:
+      - main
+  paths:
+    include:
+      - ai-web-app-backend/*
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+  - task: NodeTool@0
+    inputs:
+      versionSpec: '18.x'
+    displayName: 'Install Node.js'
+
+  - script: |
+      cd ai-web-app-backend
+      npm install
+    displayName: 'Install dependencies'
+
+  - script: |
+      cd ai-web-app-backend
+      npm run start
+    displayName: 'Start Backend Server'

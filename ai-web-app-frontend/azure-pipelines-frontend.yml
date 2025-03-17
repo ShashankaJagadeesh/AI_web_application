@@ -1,0 +1,32 @@
+trigger:
+  branches:
+    include:
+      - main
+  paths:
+    include:
+      - ai-web-app-frontend/*
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+  - task: NodeTool@0
+    inputs:
+      versionSpec: '18.x'
+    displayName: 'Install Node.js'
+
+  - script: |
+      cd ai-web-app-frontend
+      npm install
+    displayName: 'Install dependencies'
+
+  - script: |
+      cd ai-web-app-frontend
+      npm run build
+    displayName: 'Build frontend'
+
+  - task: PublishBuildArtifacts@1
+    inputs:
+      PathtoPublish: 'ai-web-app-frontend/dist'
+      ArtifactName: 'frontend-dist'
+      publishLocation: 'Container'
